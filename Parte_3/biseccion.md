@@ -31,7 +31,9 @@ Iteración 2:
 
 Nuevos límites: a = 7.25, b = 7.5
 
-Cálculo del nuevo punto medio:$$c_2 = \frac{7.25 + 7.5}{2} = 7.375\text{ ms}$$
+Cálculo del nuevo punto medio:
+
+$$c_2 = \frac{7.25 + 7.5}{2} = 7.375\text{ ms}$$
 
 Al evaluar V(7.375), el voltaje sigue siendo positivo antes de caer por debajo de cero en 7.5.
 
