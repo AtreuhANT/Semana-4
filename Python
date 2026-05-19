@@ -1,0 +1,50 @@
+import numpy as np
+
+# 1. Extracción de los datos de la tabla
+t = np.array([0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0,
+              7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0, 12.5, 13.0, 13.5,
+              14.0, 14.5, 15.0])
+V = np.array([4.8120, 4.2635, 3.7541, 3.2804, 2.8387, 2.4236, 2.0314, 1.6583, 1.3011,
+              1.2574, 1.1460, 0.8624, 0.6048, 0.3720, 0.1672, -0.0186, -0.1805, -0.3142,
+              -0.3148, -0.2769, -0.2100, 0.0483, 0.2931, 0.5185, 0.7214, 0.8982, 1.0456,
+              1.1618, 1.2465, 1.3001, 1.3228])
+
+n = len(t) - 1
+h = np.diff(t)
+
+# 2. Construcción de la matriz tridiagonal (A) y el vector de términos independientes (B)
+A = np.zeros((n+1, n+1))
+B = np.zeros(n+1)
+
+# Condiciones de frontera de Spline Natural (segunda derivada cero en los bordes)
+A[0, 0] = 1.0
+A[n, n] = 1.0
+
+for i in range(1, n):
+    A[i, i-1] = h[i-1]
+    A[i, i] = 2 * (h[i-1] + h[i])
+    A[i, i+1] = h[i]
+    B[i] = 3 * ((V[i+1] - V[i]) / h[i] - (V[i] - V[i-1]) / h[i-1])
+
+# 3. Resolución del sistema para hallar los coeficientes 'c' (segundas derivadas)
+c = np.linalg.solve(A, B)
+
+# 4. Cálculo de los coeficientes 'b' (pendientes) y 'd'
+b = np.zeros(n)
+d = np.zeros(n)
+for i in range(n):
+    b[i] = (V[i+1] - V[i]) / h[i] - h[i] * (2*c[i] + c[i+1]) / 3
+    d[i] = (c[i+1] - c[i]) / (3 * h[i])
+
+# 5. Función para estimar el voltaje en cualquier instante 't'
+def evaluar_spline(t_val):
+    # Uso de zip para encontrar el tramo de la señal correspondiente
+    for i, (t_start, t_end) in enumerate(zip(t[:-1], t[1:])):
+        if t_start <= t_val <= t_end:
+            dt = t_val - t_start
+            # Ecuación del polinomio cúbico: V(t) = a + b(dt) + c(dt)^2 + d(dt)^3
+            return V[i] + b[i]*dt + c[i]*(dt**2) + d[i]*(dt**3)
+    return None
+
+print(f"Estimación V(4.3) con Spline: {evaluar_spline(4.3):.5f} V")
+print(f"Estimación V(8.7) con Spline: {evaluar_spline(8.7):.5f} V")
