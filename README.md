@@ -2,7 +2,9 @@
 
 1 
 
-Interpolación Lineal Simple (Para comparación)Antes de construir el spline, calcularemos los valores mediante interpolación lineal simple para tener una base de comparación. La ecuación de la recta entre dos puntos 
+Interpolación Lineal Simple (Para comparación)
+
+Antes de construir el spline, calcularemos los valores mediante interpolación lineal simple para tener una base de comparación. La ecuación de la recta entre dos puntos 
 $(t_0, V_0)$ y $(t_1, V_1)$ es:
 
 $$V_L(t) = V_0 + \frac{V_1 - V_0}{t_1 - t_0}(t - t_0)$$
